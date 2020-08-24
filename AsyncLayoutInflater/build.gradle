@@ -27,7 +27,7 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compileOnly 'android.arch.lifecycle:common:1.1.1'
+    compileOnly 'androidx.lifecycle:lifecycle-common:2.0.0'
 }
 
 
@@ -60,7 +60,7 @@ uploadArchives {
         // 配置本地仓库路径，项目根目录下的repository目录中
         repository(url: localRepo)
         pom.groupId = "com.sjianjun"// 唯一标识（通常为模块包名，也可以任意）
-        pom.artifactId = project.name.toLowerCase() // 项目名称（通常为类库模块名称，也可以任意）
+        pom.artifactId = project.name.toLowerCase()+"X" // 项目名称（通常为类库模块名称，也可以任意）
         pom.version = "0.0.1" // 版本号
     }
 }
