@@ -101,37 +101,26 @@ public final class AsyncLayoutInflater {
         public boolean handleMessage(@NotNull Message msg) {
             final InflateRequest request = (InflateRequest) msg.obj;
             //检查是否被取消
-            if (request.get()) {
+            if (request.isDisposed()) {
                 return true;
             }
 
-            Looper.myQueue().addIdleHandler(new MessageQueue.IdleHandler() {
-                @Override
-                public boolean queueIdle() {
+            try {
+                if (request.view == null) {
+                    request.view = mInflater.inflate(
+                            request.resid, request.parent, false);
                     //检查是否被取消
-                    if (request.get()) {
-                        return false;
+                    if (request.isDisposed()) {
+                        return true;
                     }
-
-                    if (request.view == null) {
-                        request.view = mInflater.inflate(
-                                request.resid, request.parent, false);
-                        //检查是否被取消
-                        if (request.get()) {
-                            return false;
-                        }
-                    }
-                    try {
-                        request.callback.onInflateFinished(request.view, request.resid, request.parent);
-                    } catch (Throwable e) {
-                        if (logger != null) {
-                            logger.log("onInflateFinished error:" + e.getMessage(), e);
-                        }
-                    }
-
-                    return false;
                 }
-            });
+
+                request.callback.onInflateFinished(request.view, request.resid, request.parent);
+            } catch (Throwable e) {
+                if (logger != null) {
+                    logger.log("onInflateFinished error:" + e.getMessage(), e);
+                }
+            }
             return true;
         }
     };
