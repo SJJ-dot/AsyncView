@@ -84,6 +84,10 @@ public final class AsyncLayoutInflater {
     }
 
     public Disposable inflate(int resid, ViewGroup parent, OnInflateFinishedListener callback) {
+        return inflate(resid, parent,false, callback);
+    }
+
+    public Disposable inflate(int resid, ViewGroup parent,boolean main, OnInflateFinishedListener callback) {
         InflateRequest request = new InflateRequest();
         request.inflater = this;
         request.logger = logger;
@@ -91,7 +95,11 @@ public final class AsyncLayoutInflater {
         request.parent = parent;
         request.callback = callback;
         request.set(false);
-        mInflateThread.enqueue(request);
+        if (main) {
+            Message.obtain(request.inflater.mHandler, 0, request).sendToTarget();
+        } else {
+            mInflateThread.enqueue(request);
+        }
         return request;
     }
 
