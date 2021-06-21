@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         val result = AsyncInflateUtil().inflate(
             this,
             R.layout.activity_main,
+            true,
             OnInflateFinishedAndResumeCallback(lifecycle) { view: View, layoutRes: Int, parent: ViewGroup ->
                 Toast.makeText(this, "async inflate complete", Toast.LENGTH_SHORT).show()
             })
