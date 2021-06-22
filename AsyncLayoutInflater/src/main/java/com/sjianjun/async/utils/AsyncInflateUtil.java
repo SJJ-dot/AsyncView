@@ -26,9 +26,14 @@ public class AsyncInflateUtil {
         this.config = config;
     }
 
-    public Pair<? extends View, Disposable> inflate(final AsyncInflateConfig config, AsyncLayoutInflater asyncLayoutInflater, @NotNull ViewGroup parent, int layoutRes,boolean main, final OnInflateFinishedListener listener) {
+    public Pair<? extends View, Disposable> inflate(
+            final AsyncInflateConfig config,
+            AsyncLayoutInflater asyncLayoutInflater,
+            @NotNull ViewGroup parent,
+            int layoutRes,
+            final OnInflateFinishedListener listener) {
         config.onStartInflateView(parent);
-        Disposable disposable = asyncLayoutInflater.inflate(layoutRes, parent,main, new OnInflateFinishedListener() {
+        Disposable disposable = asyncLayoutInflater.inflate(layoutRes, parent, config.main, new OnInflateFinishedListener() {
             @Override
             public void onInflateFinished(@NotNull View view, int layoutRes, @NotNull ViewGroup parent) {
                 config.onCompleteInflateView(parent, view);
@@ -40,10 +45,13 @@ public class AsyncInflateUtil {
         return new Pair<>(parent, disposable);
     }
 
-    public Pair<? extends View, Disposable> inflate(Context context, int layoutRes,boolean main, final OnInflateFinishedListener listener) {
+    public Pair<? extends View, Disposable> inflate(
+            Context context,
+            int layoutRes,
+            final OnInflateFinishedListener listener) {
         AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(LayoutInflater.from(context), config.logger);
         AsyncInflateContainerView containerView = new AsyncInflateContainerView(context);
-        return inflate(config, asyncLayoutInflater, containerView, layoutRes,main, listener);
+        return inflate(config, asyncLayoutInflater, containerView, layoutRes, listener);
     }
 
 

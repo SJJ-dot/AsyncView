@@ -22,6 +22,8 @@ public class AsyncInflateConfig {
     public boolean fadeIn = true;
     public boolean fadeOut = true;
     public long fadeTime = 500;
+    //是否使用主线程加载
+    public boolean main = false;
 
     public void onStartInflateView(ViewGroup parent) {
         AsyncInflateLoadingView loadingView = new AsyncInflateLoadingView(parent.getContext());

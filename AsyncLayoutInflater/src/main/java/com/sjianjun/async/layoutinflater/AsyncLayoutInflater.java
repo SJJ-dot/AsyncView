@@ -70,8 +70,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public final class AsyncLayoutInflater {
 
     LayoutInflater mInflater;
-    Handler mHandler;
-    ExecutorService mInflateThread = Executors.newSingleThreadExecutor();
 
     Logger logger;
 
@@ -79,7 +77,7 @@ public final class AsyncLayoutInflater {
     public AsyncLayoutInflater(LayoutInflater inflater, Logger logger) {
         mInflater = inflater;
         this.logger = logger;
-        mHandler = new Handler(Looper.getMainLooper(), mHandlerCallback);
+
     }
 
     public Disposable inflate(int resId, ViewGroup parent, boolean main, OnInflateFinishedListener callback) {
@@ -93,7 +91,7 @@ public final class AsyncLayoutInflater {
         request.callback = callback;
         request.set(false);
         if (main) {
-            Message.obtain(request.inflater.mHandler, 0, request).sendToTarget();
+            Message.obtain(mHandler, 0, request).sendToTarget();
         } else {
             request.future = mInflateThread.submit(request);
         }
@@ -101,7 +99,7 @@ public final class AsyncLayoutInflater {
     }
 
 
-    private Callback mHandlerCallback = new Callback() {
+    private static Callback mHandlerCallback = new Callback() {
         @Override
         public boolean handleMessage(@NotNull Message msg) {
             final InflateRequest request = (InflateRequest) msg.obj;
@@ -112,8 +110,7 @@ public final class AsyncLayoutInflater {
 
             try {
                 if (request.view == null) {
-                    request.view = mInflater.inflate(
-                            request.resId, request.parent, false);
+                    request.view = request.inflate();
                     //检查是否被取消
                     if (request.isDisposed()) {
                         return true;
@@ -122,13 +119,14 @@ public final class AsyncLayoutInflater {
 
                 request.callback.onInflateFinished(request.view, request.resId, request.parent);
             } catch (Throwable e) {
-                if (logger != null) {
-                    logger.log("onInflateFinished error:" + e.getMessage(), e);
-                }
+                request.logger.log("onInflateFinished error:" + e.getMessage(), e);
             }
             return true;
         }
     };
+
+    static Handler mHandler = new Handler(Looper.getMainLooper(), mHandlerCallback);
+    static ExecutorService mInflateThread = Executors.newSingleThreadExecutor();
 
     private static class InflateRequest extends AtomicBoolean implements Disposable, Runnable {
         AsyncLayoutInflater inflater;
@@ -162,6 +160,10 @@ public final class AsyncLayoutInflater {
             }
         }
 
+        private View inflate() {
+            return inflater.mInflater.inflate(resId, parent, false);
+        }
+
         @Override
         public void run() {
             if (isDisposed()) {
@@ -169,11 +171,7 @@ public final class AsyncLayoutInflater {
                 return;
             }
             try {
-                view = inflater.mInflater.inflate(resId, parent, false);
-            } catch (InterruptedException ex) {
-                // Probably a Looper failure, retry on the UI thread
-                logger.log("resId:" + resId + " Failed to inflate resource in the background! " + ex.getMessage(), ex);
-                return;
+                view = inflate();
             } catch (Throwable ex) {
                 // Probably a Looper failure, retry on the UI thread
                 logger.log("resId:" + resId + " Failed to inflate resource in the background! Retrying on the UI thread:" + ex.getMessage(), ex);
