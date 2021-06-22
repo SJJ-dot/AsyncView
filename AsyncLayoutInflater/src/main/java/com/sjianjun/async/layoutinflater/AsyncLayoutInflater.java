@@ -20,7 +20,6 @@ import android.os.Handler;
 import android.os.Handler.Callback;
 import android.os.Looper;
 import android.os.Message;
-import android.os.MessageQueue;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,16 +30,17 @@ import com.sjianjun.async.Logger;
 import com.sjianjun.async.OnInflateFinishedListener;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
  * <p>Helper class for inflating layouts asynchronously. To use, construct
  * an instance of {@link AsyncLayoutInflater} on the UI thread and call
- * {@link #inflate(int, ViewGroup, OnInflateFinishedListener)}. The
+ * {@link #inflate(int, ViewGroup, boolean, OnInflateFinishedListener)}. The
  * {@link OnInflateFinishedListener} will be invoked on the UI thread
  * when the inflate request has completed.
  *
@@ -71,7 +71,7 @@ public final class AsyncLayoutInflater {
 
     LayoutInflater mInflater;
     Handler mHandler;
-    InflateThread mInflateThread;
+    ExecutorService mInflateThread = Executors.newSingleThreadExecutor();
 
     Logger logger;
 
@@ -79,26 +79,23 @@ public final class AsyncLayoutInflater {
     public AsyncLayoutInflater(LayoutInflater inflater, Logger logger) {
         mInflater = inflater;
         this.logger = logger;
-        mHandler = new Handler(mHandlerCallback);
-        mInflateThread = InflateThread.getInstance();
+        mHandler = new Handler(Looper.getMainLooper(), mHandlerCallback);
     }
 
-    public Disposable inflate(int resid, ViewGroup parent, OnInflateFinishedListener callback) {
-        return inflate(resid, parent,false, callback);
-    }
-
-    public Disposable inflate(int resid, ViewGroup parent,boolean main, OnInflateFinishedListener callback) {
+    public Disposable inflate(int resId, ViewGroup parent, boolean main, OnInflateFinishedListener callback) {
         InflateRequest request = new InflateRequest();
         request.inflater = this;
-        request.logger = logger;
-        request.resid = resid;
+        if (logger != null) {
+            request.logger = logger;
+        }
+        request.resId = resId;
         request.parent = parent;
         request.callback = callback;
         request.set(false);
         if (main) {
             Message.obtain(request.inflater.mHandler, 0, request).sendToTarget();
         } else {
-            mInflateThread.enqueue(request);
+            request.future = mInflateThread.submit(request);
         }
         return request;
     }
@@ -116,14 +113,14 @@ public final class AsyncLayoutInflater {
             try {
                 if (request.view == null) {
                     request.view = mInflater.inflate(
-                            request.resid, request.parent, false);
+                            request.resId, request.parent, false);
                     //检查是否被取消
                     if (request.isDisposed()) {
                         return true;
                     }
                 }
 
-                request.callback.onInflateFinished(request.view, request.resid, request.parent);
+                request.callback.onInflateFinished(request.view, request.resId, request.parent);
             } catch (Throwable e) {
                 if (logger != null) {
                     logger.log("onInflateFinished error:" + e.getMessage(), e);
@@ -133,99 +130,61 @@ public final class AsyncLayoutInflater {
         }
     };
 
-    private static class InflateRequest extends AtomicBoolean implements Disposable {
+    private static class InflateRequest extends AtomicBoolean implements Disposable, Runnable {
         AsyncLayoutInflater inflater;
         ViewGroup parent;
-        int resid;
+        int resId;
         View view;
         OnInflateFinishedListener callback;
-        @Nullable
-        Logger logger;
+        Logger logger = Logger.empty;
+        Future<?> future = null;
 
         InflateRequest() {
         }
 
         @Override
         public boolean isDisposed() {
-            return get();
+            Future<?> future = this.future;
+            if (future != null) {
+                return get() || future.isCancelled();
+            } else {
+                return get();
+            }
         }
 
         @Override
         public void dispose() {
             set(true);
-        }
-    }
-
-    private static class InflateThread extends Thread {
-        private static final InflateThread sInstance;
-
-        static {
-            sInstance = new InflateThread();
-            sInstance.start();
-        }
-
-        public static InflateThread getInstance() {
-            return sInstance;
-        }
-
-        private ArrayBlockingQueue<InflateRequest> mQueue = new ArrayBlockingQueue<>(10);
-
-        // Extracted to its own method to ensure locals have a constrained liveness
-        // scope by the GC. This is needed to avoid keeping previous request references
-        // alive for an indeterminate amount of time, see b/33158143 for details
-        public void runInner() {
-            InflateRequest request;
-            try {
-                request = mQueue.take();
-                if (request.logger != null) {
-                    request.logger.log("inflate runInner " + request.get() + "  " + System.identityHashCode(request), null);
-                }
-            } catch (InterruptedException ex) {
-                // Odd, just continue
-                return;
+            Future<?> future = this.future;
+            if (future != null) {
+                this.future = null;
+                future.cancel(true);
             }
-
-            if (request.get()) {
-                if (request.logger != null) {
-                    request.logger.log("inflate request.get() 1" + request.get() + "  " + request, null);
-                }
-                return;
-            }
-            try {
-                request.view = request.inflater.mInflater.inflate(
-                        request.resid, request.parent, false);
-            } catch (RuntimeException ex) {
-                // Probably a Looper failure, retry on the UI thread
-                if (request.logger != null) {
-                    request.logger.log("Failed to inflate resource in the background! Retrying on the UI thread:" + ex.getMessage(), ex);
-                }
-            }
-            if (request.get()) {
-                if (request.logger != null) {
-                    request.logger.log("inflate request.get() 2", null);
-                }
-                return;
-            }
-            if (request.logger != null) {
-                request.logger.log("send message", null);
-            }
-            Message.obtain(request.inflater.mHandler, 0, request).sendToTarget();
         }
 
         @Override
         public void run() {
-            while (true) {
-                runInner();
+            if (isDisposed()) {
+                logger.log("inflate isDisposed:" + isDisposed() + "  resid:" + resId + " parent:" + parent, null);
+                return;
             }
-        }
-
-        public void enqueue(InflateRequest request) {
             try {
-                mQueue.put(request);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(
-                        "Failed to enqueue async inflate request", e);
+                view = inflater.mInflater.inflate(resId, parent, false);
+            } catch (InterruptedException ex) {
+                // Probably a Looper failure, retry on the UI thread
+                logger.log("resId:" + resId + " Failed to inflate resource in the background! " + ex.getMessage(), ex);
+                return;
+            } catch (Throwable ex) {
+                // Probably a Looper failure, retry on the UI thread
+                logger.log("resId:" + resId + " Failed to inflate resource in the background! Retrying on the UI thread:" + ex.getMessage(), ex);
             }
+            if (isDisposed()) {
+                logger.log("inflate isDisposed:" + isDisposed() + "  resid:" + resId + " parent:" + parent, null);
+                return;
+            }
+            logger.log("send message inflate complete:" + (view != null), null);
+            future = null;
+            Message.obtain(inflater.mHandler, 0, this).sendToTarget();
         }
     }
 }
