@@ -2,22 +2,17 @@
 异步加载view 。增加了loading。
 ```groovy
 allprojects {
-    repositories {
-        ...
-        maven {
-            url "https://raw.githubusercontent.com/SJJ-dot/repo/master/"
-			//or url "https://gitee.com/SJJ-dot/repo/raw/master"
-        }
-    }
-}
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 
 ```groovy
 
 dependencies {
-    //...
-    implementation 'com.sjianjun:asynclayoutinflaterX:0.0.1'
-
-}
+	        implementation 'com.github.SJJ-dot:AsyncInflateView:0.0.3'
+	}
 
 ```
