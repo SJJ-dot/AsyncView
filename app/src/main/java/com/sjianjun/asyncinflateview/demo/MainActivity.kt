@@ -1,14 +1,8 @@
 package com.sjianjun.asyncinflateview.demo
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
-import com.sjianjun.async.AsyncInflateConfig
-import com.sjianjun.async.OnInflateFinishedAndResumeCallback
-import com.sjianjun.async.utils.AsyncInflateUtil
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
