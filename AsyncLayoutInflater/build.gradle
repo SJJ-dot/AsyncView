@@ -27,7 +27,6 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compileOnly 'androidx.lifecycle:lifecycle-common:2.0.0'
 }
 
 
