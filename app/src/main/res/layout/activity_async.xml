@@ -10,216 +10,268 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <HorizontalScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="textview" />
-
-                    <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <CheckedTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <AutoCompleteTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <CalendarView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageSwitcher
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <NumberPicker
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <ProgressBar
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
 
-                <RadioGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
-
-            <RatingBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <WebView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="WebViewLayout" />
-
-            <VideoView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="textview" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <CheckedTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <AutoCompleteTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <CalendarView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <DatePicker
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <ImageSwitcher
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <NumberPicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+        </HorizontalScrollView>
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <ProgressBar
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <RadioButton
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <RadioGroup
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </RadioGroup>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <RatingBar
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <VideoView
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <CalendarView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CalendarView" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CalendarView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <DatePicker
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
         </HorizontalScrollView>
 

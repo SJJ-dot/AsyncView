@@ -12,7 +12,13 @@ allprojects {
 ```groovy
 
 dependencies {
-	        implementation 'com.github.SJJ-dot:AsyncInflateView:0.0.3'
+	        implementation 'com.github.SJJ-dot:AsyncInflateView:1.0.0'
 	}
 
+```
+### Simple
+```
+setContentView(AsyncView(this,R.layout.activity_async){
+
+})
 ```
