@@ -1,4 +1,4 @@
-# AsyncInflateView
+# AsyncInflateView [![](https://jitpack.io/v/SJJ-dot/AsyncInflateView.svg)](https://jitpack.io/#SJJ-dot/AsyncInflateView)
 异步加载view 。增加了loading。
 ```groovy
 allprojects {
