@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 
 @SuppressLint("ViewConstructor")
-class AsyncView constructor(
+open class AsyncView constructor(
     context: Context,
     private val layoutRes: Int,
     private val inflateDelayMillis: Long = 300,
@@ -21,10 +21,10 @@ class AsyncView constructor(
     private val callback: (View) -> Unit
 ) : FrameLayout(context) {
     private var inflate:AsyncInflater.Disposable?=null
-    private var inflated = false
+    var inflated = false
 
 
-    private fun inflate() {
+    open fun inflate() {
         if (!inflated) {
             inflated = true
             inflate = AsyncInflater.inflate(
