@@ -15,7 +15,7 @@ open class AsyncView constructor(
     private val callbackDelayMillis: Long = 300,
     private val inflateInUI: Boolean = false,
     private val callbackInUI: Boolean = true,
-    private val hasWindowFocus:Boolean = true,
+    private val windowFocus:Boolean = true,
     private val widthParam:Int = LayoutParams.MATCH_PARENT,
     private val heightParam:Int = LayoutParams.MATCH_PARENT,
     private val callback: (View) -> Unit
@@ -43,14 +43,14 @@ open class AsyncView constructor(
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         super.onWindowFocusChanged(hasWindowFocus)
-        if (this.hasWindowFocus) {
+        if (this.windowFocus && hasWindowFocus) {
             inflate()
         }
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        if (!hasWindowFocus) {
+        if (!windowFocus || hasWindowFocus()) {
             inflate()
         }
     }
