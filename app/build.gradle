@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.sjianjun.asyncinflateview.demo"
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"

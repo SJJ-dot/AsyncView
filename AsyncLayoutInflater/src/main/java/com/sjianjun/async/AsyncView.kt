@@ -13,7 +13,8 @@ class AsyncView constructor(
     private val layoutRes: Int,
     private val inflateDelayMillis: Long = 300,
     private val callbackDelayMillis: Long = 300,
-    private val mainInflate: Boolean = false,
+    private val inflateInUI: Boolean = false,
+    private val callbackInUI: Boolean = true,
     private val hasWindowFocus:Boolean = true,
     private val widthParam:Int = LayoutParams.MATCH_PARENT,
     private val heightParam:Int = LayoutParams.MATCH_PARENT,
@@ -33,7 +34,8 @@ class AsyncView constructor(
                 true,
                 inflateDelayMillis,
                 callbackDelayMillis,
-                mainInflate,
+                inflateInUI,
+                callbackInUI,
                 callback
             )
         }

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 object AsyncInflater {
     private val inflaterExecutor = Executors.newSingleThreadScheduledExecutor()
-    private val mainHandler = Handler(Looper.getMainLooper())
+    private val uiHandler = Handler(Looper.getMainLooper())
     fun inflate(
         inflater: LayoutInflater,
         layoutRes: Int,
@@ -22,42 +22,43 @@ object AsyncInflater {
         attachToRoot: Boolean = parent != null,
         inflateDelayMillis: Long = 300,
         callbackDelayMillis: Long = 300,
-        mainInflate: Boolean = false,
+        inflateInUI: Boolean = false,
+        callbackInUI: Boolean = true,
         callback: (View) -> Unit
     ): Disposable {
         val ref = RefDisposable()
-        if (mainInflate) {
-            val infDisposable = HandlerDisposable(mainHandler) {
+        if (inflateInUI) {
+            val infDisposable = HandlerDisposable(uiHandler) {
                 val view = inflater.inflate(layoutRes, parent, false)
-                val callbackDisposable = HandlerDisposable(mainHandler) {
-                    if (attachToRoot) {
-                        parent!!.addView(view)
-                        callback(parent)
-                    } else {
-                        callback(view)
-                    }
-                }
-                ref.setDispose(callbackDisposable)
-                mainHandler.postDelayed(callbackDisposable, callbackDelayMillis)
+                callback(
+                    callbackInUI,
+                    attachToRoot,
+                    parent,
+                    view,
+                    callback,
+                    ref,
+                    callbackDelayMillis
+                )
+
             }
             ref.setDispose(infDisposable)
-            mainHandler.postDelayed(infDisposable, inflateDelayMillis)
+            uiHandler.postDelayed(infDisposable, inflateDelayMillis)
         } else {
             val schedule = inflaterExecutor.schedule({
                 try {
                     val view = inflater.inflate(layoutRes, parent, false)
-                    val callbackDisposable = HandlerDisposable(mainHandler) {
-                        if (attachToRoot) {
-                            parent!!.addView(view)
-                            callback(parent)
-                        } else {
-                            callback(view)
-                        }
-                    }
-                    ref.setDispose(callbackDisposable)
-                    mainHandler.postDelayed(callbackDisposable, callbackDelayMillis)
+
+                    callback(
+                        callbackInUI,
+                        attachToRoot,
+                        parent,
+                        view,
+                        callback,
+                        ref,
+                        callbackDelayMillis
+                    )
                 } catch (e: Exception) {
-                    Log.e("AsyncInflater","inflate error",e)
+                    Log.e("AsyncInflater", "inflate error", e)
                 }
             }, inflateDelayMillis, TimeUnit.MILLISECONDS)
             ref.setDispose(FutureDisposable(schedule))
@@ -65,6 +66,36 @@ object AsyncInflater {
 
         return ref
     }
+
+    private fun callback(
+        callbackInUI: Boolean,
+        attachToRoot: Boolean,
+        parent: ViewGroup?,
+        view: View,
+        callback: (View) -> Unit,
+        ref: RefDisposable,
+        callbackDelayMillis: Long
+    ) {
+        if (callbackInUI) {
+            val callbackDisposable = HandlerDisposable(uiHandler) {
+                if (attachToRoot) {
+                    parent!!.addView(view)
+                }
+                callback(view)
+            }
+            ref.setDispose(callbackDisposable)
+            uiHandler.postDelayed(callbackDisposable, callbackDelayMillis)
+        } else {
+            val schedule = inflaterExecutor.schedule({
+                if (attachToRoot && parent?.isAttachedToWindow == false) {
+                    parent.addView(view)
+                }
+                callback(view)
+            }, callbackDelayMillis, TimeUnit.MILLISECONDS)
+            ref.setDispose(FutureDisposable(schedule))
+        }
+    }
+
 
     interface Disposable {
         fun dispose()
@@ -89,7 +120,7 @@ object AsyncInflater {
     ) : AtomicBoolean(), Disposable, Runnable {
         override fun dispose() {
             if (compareAndSet(false, true)) {
-                Log.e("AsyncInflater","HandlerDisposable dispose")
+                Log.e("AsyncInflater", "HandlerDisposable dispose")
                 handler.removeCallbacks(this)
             }
         }
