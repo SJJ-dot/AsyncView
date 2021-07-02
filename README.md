@@ -1,4 +1,5 @@
-# AsyncInflateView [![](https://jitpack.io/v/SJJ-dot/AsyncInflateView.svg)](https://jitpack.io/#SJJ-dot/AsyncInflateView)
+# AsyncView [![](https://jitpack.io/v/SJJ-dot/AsyncView.svg)](https://jitpack.io/#SJJ-dot/AsyncView)
+
 异步加载view。相比官方的，增加了一些可选参数。实际使用中发现xml加载线程会被中断，使用了java的单线程线程池。
 ```groovy
 allprojects {
@@ -12,7 +13,7 @@ allprojects {
 ```groovy
 
 dependencies {
-	        implementation 'com.github.SJJ-dot:AsyncInflateView:1.0.0'
+	        implementation 'com.github.SJJ-dot:AsyncView:1.0.0'
 	}
 
 ```
