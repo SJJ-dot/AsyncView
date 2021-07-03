@@ -11,7 +11,7 @@ import android.widget.FrameLayout
 open class AsyncView constructor(
     context: Context,
     private val layoutRes: Int,
-    private val inflateDelayMillis: Long = 300,
+    private val inflateDelayMillis: Long = 0,
     private val callbackDelayMillis: Long = 300,
     private val inflateInUI: Boolean = false,
     private val callbackInUI: Boolean = true,

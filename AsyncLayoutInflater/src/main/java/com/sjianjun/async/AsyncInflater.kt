@@ -20,7 +20,7 @@ object AsyncInflater {
         layoutRes: Int,
         parent: ViewGroup? = null,
         attachToRoot: Boolean = parent != null,
-        inflateDelayMillis: Long = 300,
+        inflateDelayMillis: Long = 0,
         callbackDelayMillis: Long = 300,
         inflateInUI: Boolean = false,
         callbackInUI: Boolean = true,
