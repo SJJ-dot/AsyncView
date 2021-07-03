@@ -13,24 +13,27 @@ open class AsyncView constructor(
     layoutRes: Int,
     inflateDelayInUIMillis: Long = 300,
     inflateInUI: Boolean = false,
+    callbackDelayMillis: Long = 300,
     private val widthParam: Int = LayoutParams.MATCH_PARENT,
     private val heightParam: Int = LayoutParams.MATCH_PARENT,
     private val callback: (View) -> Unit
 ) : FrameLayout(context) {
     private var inflate: AsyncInflater.Disposable? = null
     private var view: View? = null
+    private val minDelay = 10L
 
     init {
         inflate = AsyncInflater.inflate(
             LayoutInflater.from(context),
             layoutRes,
-            this,
-            true,
-            if (inflateInUI) inflateDelayInUIMillis else 0,
-            0,
-            inflateInUI,
-            false,
-            this::inflateCallback
+            parent = this,
+            attachToRoot = true,
+            inflateDelayMillis = if (inflateInUI) maxOf(inflateDelayInUIMillis, minDelay)
+            else minDelay,
+            callbackDelayMillis = maxOf(callbackDelayMillis, minDelay),
+            inflateInUI = inflateInUI,
+            callbackInUI = true,
+            callback = this::inflateCallback
         )
     }
 
@@ -44,7 +47,7 @@ open class AsyncView constructor(
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         super.onWindowFocusChanged(hasWindowFocus)
-        val locView = view?:return
+        val locView = view ?: return
         if (hasWindowFocus) {
             view = null
             callCallback(locView)
