@@ -10,50 +10,56 @@ import android.widget.FrameLayout
 @SuppressLint("ViewConstructor")
 open class AsyncView constructor(
     context: Context,
-    private val layoutRes: Int,
-    private val inflateDelayMillis: Long = 0,
-    private val callbackDelayMillis: Long = 300,
-    private val inflateInUI: Boolean = false,
-    private val callbackInUI: Boolean = true,
-    private val windowFocus:Boolean = true,
-    private val widthParam:Int = LayoutParams.MATCH_PARENT,
-    private val heightParam:Int = LayoutParams.MATCH_PARENT,
+    layoutRes: Int,
+    inflateDelayInUIMillis: Long = 300,
+    inflateInUI: Boolean = false,
+    private val widthParam: Int = LayoutParams.MATCH_PARENT,
+    private val heightParam: Int = LayoutParams.MATCH_PARENT,
     private val callback: (View) -> Unit
 ) : FrameLayout(context) {
-    private var inflate:AsyncInflater.Disposable?=null
-    var inflated = false
+    private var inflate: AsyncInflater.Disposable? = null
+    private var view: View? = null
 
+    init {
+        inflate = AsyncInflater.inflate(
+            LayoutInflater.from(context),
+            layoutRes,
+            this,
+            true,
+            if (inflateInUI) inflateDelayInUIMillis else 0,
+            0,
+            inflateInUI,
+            false,
+            this::inflateCallback
+        )
+    }
 
-    open fun inflate() {
-        if (!inflated) {
-            inflated = true
-            inflate = AsyncInflater.inflate(
-                LayoutInflater.from(context),
-                layoutRes,
-                this,
-                true,
-                inflateDelayMillis,
-                callbackDelayMillis,
-                inflateInUI,
-                callbackInUI,
-                callback
-            )
+    open fun inflateCallback(view: View) {
+        if (hasWindowFocus()) {
+            callCallback(view)
+        } else {
+            this.view = view
         }
     }
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         super.onWindowFocusChanged(hasWindowFocus)
-        if (this.windowFocus && hasWindowFocus) {
-            inflate()
+        val locView = view?:return
+        if (hasWindowFocus) {
+            view = null
+            callCallback(locView)
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (!windowFocus || hasWindowFocus()) {
-            inflate()
+    private fun callCallback(locView: View) {
+        post {
+            if (locView.parent == null) {
+                addView(locView)
+            }
+            callback(locView)
         }
     }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         inflate?.dispose()
