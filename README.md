@@ -13,7 +13,7 @@ allprojects {
 ```groovy
 
 dependencies {
-	        implementation 'com.github.SJJ-dot:AsyncView:1.0.1'
+	        implementation 'com.github.SJJ-dot:AsyncView:1.1.1'
 	}
 
 ```

@@ -11,10 +11,15 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 object AsyncInflater {
     private val inflaterExecutor = Executors.newSingleThreadScheduledExecutor()
     private val uiHandler = Handler(Looper.getMainLooper())
+
+
     fun inflate(
         inflater: LayoutInflater,
         layoutRes: Int,
@@ -46,8 +51,7 @@ object AsyncInflater {
         } else {
             val schedule = inflaterExecutor.schedule({
                 try {
-                    val view = inflater.inflate(layoutRes, parent, false)
-
+                    val view = inflater.cloneInContext(inflater.context).inflate(layoutRes, parent, false)
                     callback(
                         callbackInUI,
                         attachToRoot,

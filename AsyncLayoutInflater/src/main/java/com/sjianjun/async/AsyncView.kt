@@ -20,7 +20,6 @@ open class AsyncView constructor(
 ) : FrameLayout(context) {
     private var inflate: AsyncInflater.Disposable? = null
     private var view: View? = null
-    private val minDelay = 10L
 
     init {
         inflate = AsyncInflater.inflate(
@@ -28,9 +27,9 @@ open class AsyncView constructor(
             layoutRes,
             parent = this,
             attachToRoot = true,
-            inflateDelayMillis = if (inflateInUI) maxOf(inflateDelayInUIMillis, minDelay)
-            else minDelay,
-            callbackDelayMillis = maxOf(callbackDelayMillis, minDelay),
+            inflateDelayMillis = if (inflateInUI) inflateDelayInUIMillis
+            else 0,
+            callbackDelayMillis = callbackDelayMillis,
             inflateInUI = inflateInUI,
             callbackInUI = true,
             callback = this::inflateCallback
