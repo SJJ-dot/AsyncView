@@ -6,19 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import java.lang.ref.WeakReference
+import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
-import kotlin.time.toDuration
 
 object AsyncInflater {
     private val inflaterExecutor = Executors.newSingleThreadScheduledExecutor()
     private val uiHandler = Handler(Looper.getMainLooper())
-
+    private val inflaterMap = WeakHashMap<LayoutInflater, WeakReference<LayoutInflater>>(5)
 
     fun inflate(
         inflater: LayoutInflater,
@@ -51,7 +50,14 @@ object AsyncInflater {
         } else {
             val schedule = inflaterExecutor.schedule({
                 try {
-                    val view = inflater.cloneInContext(inflater.context).inflate(layoutRes, parent, false)
+                    val size = inflaterMap.size
+                    var newInflater = inflaterMap[inflater]?.get()
+                    if (newInflater == null) {
+                        newInflater = inflater.cloneInContext(inflater.context)!!
+                        inflaterMap[inflater] = WeakReference(newInflater)
+                    }
+
+                    val view = newInflater.inflate(layoutRes, parent, false)
                     callback(
                         callbackInUI,
                         attachToRoot,
