@@ -6,6 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 class SyncActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sync)
+        setContentView(R.layout.activity_async_test)
     }
 }

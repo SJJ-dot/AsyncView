@@ -7,7 +7,7 @@ import com.sjianjun.async.AsyncView
 class AsyncActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(AsyncView(this,R.layout.activity_async){
+        setContentView(AsyncView(this,R.layout.activity_async_test){
 
         })
 
