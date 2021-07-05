@@ -50,7 +50,6 @@ object AsyncInflater {
         } else {
             val schedule = inflaterExecutor.schedule({
                 try {
-                    val size = inflaterMap.size
                     var newInflater = inflaterMap[inflater]?.get()
                     if (newInflater == null) {
                         newInflater = inflater.cloneInContext(inflater.context)!!

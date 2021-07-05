@@ -16,7 +16,7 @@ open class AsyncView constructor(
     callbackDelayMillis: Long = 300,
     private val widthParam: Int = LayoutParams.MATCH_PARENT,
     private val heightParam: Int = LayoutParams.MATCH_PARENT,
-    private val callback: (View) -> Unit
+    protected var callback: (View) -> Unit = {}
 ) : FrameLayout(context) {
     private var inflate: AsyncInflater.Disposable? = null
     private var view: View? = null
