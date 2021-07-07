@@ -2,6 +2,7 @@ package com.sjianjun.async
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +17,9 @@ open class AsyncView constructor(
     callbackDelayMillis: Long = 300,
     private val widthParam: Int = LayoutParams.MATCH_PARENT,
     private val heightParam: Int = LayoutParams.MATCH_PARENT,
+    attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0,
     protected var callback: (View) -> Unit = {}
-) : FrameLayout(context) {
+) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
     private var inflate: AsyncInflater.Disposable? = null
     private var view: View? = null
 
