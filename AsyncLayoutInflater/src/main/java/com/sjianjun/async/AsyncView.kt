@@ -15,8 +15,8 @@ open class AsyncView constructor(
     inflateDelayInUIMillis: Long = 300,
     inflateInUI: Boolean = false,
     callbackDelayMillis: Long = 300,
-    private val widthParam: Int = LayoutParams.MATCH_PARENT,
-    private val heightParam: Int = LayoutParams.MATCH_PARENT,
+    private val widthParam: Int? = LayoutParams.MATCH_PARENT,
+    private val heightParam: Int? = LayoutParams.MATCH_PARENT,
     attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0,
     protected var callback: (View) -> Unit = {}
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
@@ -70,8 +70,12 @@ open class AsyncView constructor(
     }
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
-        params?.width = widthParam
-        params?.height = heightParam
+        if (widthParam != null) {
+            params?.width = widthParam
+        }
+        if (heightParam != null) {
+            params?.height = heightParam
+        }
         super.setLayoutParams(params)
     }
 }
