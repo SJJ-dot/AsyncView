@@ -21,7 +21,6 @@ open class AsyncView constructor(
     protected var callback: (View) -> Unit = {}
 ) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
     private var inflate: AsyncInflater.Disposable? = null
-    private var view: View? = null
 
     init {
         inflate = AsyncInflater.inflate(
@@ -34,34 +33,19 @@ open class AsyncView constructor(
             callbackDelayMillis = callbackDelayMillis,
             inflateInUI = inflateInUI,
             callbackInUI = true,
-            callback = this::inflateCallback
+            callback = { view->
+                post {
+                    if (view.parent == null) {
+                        addView(view)
+                    }
+                    onCallback(view)
+                }
+            }
         )
     }
 
-    open fun inflateCallback(view: View) {
-        if (hasWindowFocus()) {
-            callCallback(view)
-        } else {
-            this.view = view
-        }
-    }
-
-    override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
-        super.onWindowFocusChanged(hasWindowFocus)
-        val locView = view ?: return
-        if (hasWindowFocus) {
-            view = null
-            callCallback(locView)
-        }
-    }
-
-    private fun callCallback(locView: View) {
-        post {
-            if (locView.parent == null) {
-                addView(locView)
-            }
-            callback(locView)
-        }
+    open fun onCallback(view: View) {
+        callback(view)
     }
 
     override fun onDetachedFromWindow() {
